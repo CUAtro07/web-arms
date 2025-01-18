@@ -1,0 +1,1559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Distribution Records Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="icon" href="ARMS LOGO.png" type="image/png">
+
+    <style>
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', Arial, sans-serif;  /* Modern font */
+            background-color: #f4f7fc;  /* Softer background */
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            flex-direction: row;
+        }
+
+        .sidebar {
+ width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s;
+}
+
+       
+                
+
+        .sidebar h2 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 26px; /* Slightly larger */
+            font-weight: 540;
+        }
+        
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .sidebar ul li {
+            padding: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+        }
+        
+        
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+        
+        .sidebar ul li i {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+        
+        
+        body {
+            margin-left: 260px;  /* Adjusted for wider sidebar */
+            padding: 30px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            width: calc(100% - 260px);
+            background:#FFFF;
+            height: 100vh;
+            background-size: 100%;
+        }
+        
+        .summary {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .batch-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-top: 20px;
+        }       
+        
+        .batch-box {
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px;
+            background: #f9f9f9;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+       
+        }
+
+        .batch-box h3 {
+           font-size: 18px;
+           color: #3fa648;
+           margin-bottom: 10px;
+        }
+
+        .batch-box p {
+            margin: 5px 0;
+            color: #555;
+            font-size: 14px;
+        }
+
+        .batch-box button {
+            background: #3fa648;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .batch-box button:hover {
+            background: #2d8f3a;
+        }
+
+        .batch-box:hover {
+            transform: scale(1.02);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+                
+        
+        .icon-container {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .edit-icon, .delete-icon {
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s ease;
+        }
+        
+        .edit-icon:hover {
+            color: #3498db; /* Edit icon hover color */
+        }
+        
+        .delete-icon:hover {
+            color: #e74c3c; /* Delete icon hover color */
+        }
+   
+        
+        .batch-box {
+             
+            top: 10px;
+            right: 10px;
+        }
+        
+        .batch-box:hover {
+            background-color: hsl(125, 53%, 87%);
+            color: rgb(0, 0, 0);
+        }
+        
+        .batch-details {
+            margin-top: 10px;
+            display: none;
+            background-color: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .batch-details table {
+            width: 100%;
+            margin-top: 10px;
+            border-collapse: collapse;
+        }
+        
+        .batch-details th,
+        .batch-details td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        
+        .button,
+        .cv-button {
+            background-color: #27ae60;
+            border: none;
+            color: white;
+            padding: 16px;
+            text-align: center;
+            font-size: 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        
+        .button:hover,
+        .cv-button:hover {
+            background-color: #219150;
+        }
+        
+        .cv-button i {
+            margin-right: 8px;
+        }
+
+        #historySection .history-timeline .history-item::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: #28a745;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+        
+        
+        .history-timeline {
+            display: flex;
+            flex-direction: column;
+            /* Fallback for gap */
+            row-gap: 10px; 
+        }
+
+        .history-timeline .history-item {
+            display: flex;
+            align-items: center;
+        }
+        
+        .history-timeline .history-item::before {
+            content: '';
+            width: 10px;
+            height: 10px;
+            background-color: #28a745;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .history-timeline .history-item span {
+            font-size: 16px; /* Make the font slightly larger */
+            color: #444; /* Use a more visible shade */
+        }  
+        
+        .history-date {
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 16px;
+            color: #555;
+        }
+        
+        .history-row {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr 1fr; /* Adjust column widths */
+            gap: 10px;
+            padding: 5px 0;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .history-row span {
+            font-size: 14px;
+            color: #333;
+        }
+
+        
+             /* Style for modal container */
+        .modal {
+            display: none; /* Initially hidden */
+            position: fixed;
+            z-index: 1; /* On top */
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%); /* This will center the modal */
+            width: 80%; /* Adjust the width as needed */
+            max-width: 600px; /* Optional: max width for the modal */
+            padding-top: 60px;
+        }
+
+        /* Modal Background */
+        #editBatchModal {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 400px;
+            padding: 20px;
+            border-radius: 10px;
+            z-index: 1000;
+            background-color: #ffffff; /* Set background color here */
+        }
+
+        /* Modal Content */
+        #editDistributionModal > h3 {
+            margin-bottom: 20px;
+            color: #fff; /* White text for better visibility */
+        }
+
+        /* Input Fields */
+        #editDistributedQuantity,
+        #editDistributedTo,
+        #editDistributionDate {
+            width: 80%; /* Set a width for the input fields */
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc; /* Light border */
+            border-radius: 5px; /* Rounded corners */
+            background-color: #fff; 
+        }
+
+        /* Buttons */
+        #saveDistributionChanges,
+        button {
+            width: fit-content; /* Set a width for the buttons */
+            padding: 10px;
+            margin: 10px 1%;
+            border: none; /* Remove default border */
+            border-radius: 5px; /* Rounded corners */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s; /* Smooth transition */
+        }
+
+        /* Save Changes Button */
+        #saveDistributionChanges {
+            background-color: #28a745; /* Green background */
+            color: white; /* White text */
+        }
+
+        /* Cancel Button */
+        button {
+
+            color: white; /* White text */
+        }
+
+        /* Button Hover Effects */
+        #saveDistributionChanges:hover {
+            background-color: #218838; /* Darker green on hover */
+        }
+
+        button:hover {
+            background-color: #c82333; /* Darker red on hover */
+        }
+                
+        /* Modal close button (X icon) */
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #333; /* Dark gray for neutral tone */
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.2s ease;
+        }
+
+        .modal-close:hover {
+            color: #ff4d4d; /* Subtle red on hover to indicate 'close' */
+            transform: scale(1.2); /* Slight scaling for hover effect */
+        }
+
+        .modal-close:active {
+            transform: scale(1); /* Reset scale on click */
+        }
+
+        .modal-content {
+            background: #fff;
+            padding: 20px;
+            width: 500px;
+            max-width: 90%; /* Adjust for smaller screens */
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            animation: fadeIn 0.3s ease-out;
+            position: relative; /* Needed for the close icon */
+        }
+
+        /* Close icon */
+        .modal-close {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            font-family: Arial, sans-serif;
+        }
+
+        .modal-close:hover,
+        .modal-close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+
+
+        /* Form labels */
+        label {
+            font-size: 14px;
+            color: #333333; /* Darker gray for readability */
+            margin-bottom: 5px;
+            display: block;
+            font-weight: bold;
+        }
+
+        /* Input fields */
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc; /* Light gray border */
+            border-radius: 5px; /* Rounded corners for a modern look */
+            box-sizing: border-box;
+            font-size: 14px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input:focus, select:focus {
+            border-color: #3fa648; /* Highlighted green border on focus */
+            box-shadow: 0 0 8px rgba(63, 166, 72, 0.2); /* Soft glow */
+            outline: none;
+        }
+
+        /* Button */
+        .button {
+            background: #3fa648; /* Vibrant green for a primary button */
+            color: #ffffff; /* White text for contrast */
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            text-transform: uppercase;
+            transition: background 0.3s ease;
+        }
+
+        .button:hover {
+            background: #2c7a3f; /* Slightly darker green on hover */
+        }
+
+        .button:active {
+            background: #276236; /* Even darker green when pressed */
+        }
+
+        /* Fade-in animation for modal */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .search-container {
+            margin-bottom: 25px;
+            display: flex;
+            gap: 15px;
+            justify-content: flex-start;
+        }
+        
+        .search-container input[type="text"],
+        .search-container select {
+            padding: 14px;
+            font-size: 16px;
+            width: 320px; /* Wider search bar and filters */
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-container input[type="text"]:focus,
+        .search-container select:focus {
+            border-color: #27ae60;
+        }
+        
+        @media (max-width: 768px) {
+        .sidebar {
+            width: 200px;
+        }
+        .container {
+            margin-left: 200px;
+            width: calc(100% - 200px);
+        }
+        
+        .batch-container {
+            flex-direction: column;
+        }
+        
+       .search-container input[type="text"],
+        .search-container select {
+            width: 100%; /* Make search bar full-width on smaller screens */
+        }        
+                    
+        
+                   
+        
+        .modal-form input,
+        .modal-form select,
+        .modal-form textarea {
+            padding: 14px; /* Adjust padding for smaller screens */
+            font-size: 15px; /* Slightly smaller font size for small devices */
+        }
+        
+        .modal-form textarea {
+            min-height: 140px; /* Ensure textarea is not too small */
+        }
+    }
+/* Sidebar hidden state */
+.sidebar.hidden {
+    transform: translateX(-270px); /* Moves the sidebar off-screen */
+    transition: transform 0.3s ease;
+}
+
+/* Main content adjustment when sidebar is hidden */
+.container.full-width {
+    margin-left: 0;
+    width: 100%;
+    transition: margin-left 0.3s ease;
+}
+
+/* General Styles for Button Container */
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    margin-top: 20px;
+    padding: 15px;
+    background-color: #4CAF50;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Styles */
+.button-container button {
+    display: flex;
+    align-items: center;
+    padding: 15px 90px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: #ffffff;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.button-container button i {
+    margin-right: 8px;
+}
+
+/* Hover Effects */
+.button-container button:hover {
+    background-color: #4CAF50;
+    transform: translateY(-2px);
+}
+
+/* Active Button Effect */
+.button-container button:active {
+    transform: translateY(0);
+}
+
+/* Button for Viewing Summary */
+.summary-btn {
+    background-color: #ffffff;
+}
+
+.summary-btn:hover {
+    background-color: #ffffff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .button-container button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+/* Summary Section Styles */
+.summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+/* Individual Summary Box Styles */
+.summary-box {
+    background-color: #f8f9fa;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+/* Header Style for Each Box */
+.summary-box h3 {
+    margin-bottom: 15px;
+    font-size: 18px;
+    color: #007bff;
+}
+
+/* Item Style inside Each Box */
+.summary-item p {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+
+/* Summary Box Hover Effect */
+.summary-box:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Responsive Design for Smaller Screens */
+@media (max-width: 768px) {
+    .summary {
+        grid-template-columns: 1fr; /* Stack boxes vertically on smaller screens */
+    }
+}
+
+/* Style for the farmer selection container */
+#farmerSelectionContainer {
+    display: none; /* Initially hidden */
+    margin-top: 20px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Style for the farmer checkboxes container */
+#farmerCheckboxes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+/* Style for each individual farmer checkbox and label */
+#farmerCheckboxes div {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
+}
+
+/* Add a margin to the checkbox label */
+#farmerCheckboxes label {
+    margin-left: 5px;
+    cursor: pointer;
+}
+
+/* Styling for the select dropdown to make it look cleaner */
+select {
+    padding: 8px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    box-sizing: border-box;
+    margin-top: 10px;
+}
+
+/* Styling for the submit button */
+button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+
+
+</style>
+</head>
+
+
+
+
+<body>
+</ul>
+</div>
+<div class="sidebar">
+<h2>Admin Dashboard</h2>
+<div id="toggleSidebar" class="sidebar-toggle">
+    <i class="fas fa-bars"></i>
+</div>
+<ul>
+
+    <!-- Farmers Menu -->
+    <li id="dashboardMenu" onclick="window.location.href='dashboard.html'">
+        <i class="fas fa-tachometer-alt"></i> Dashboard
+    </li>
+    
+    <li id="barangayContainer" onclick="window.location.href='admin.html'">
+        <i class="fas fa-user-friends"></i> Farmers
+    </li>
+
+    <!-- Distribution Records Menu with Submenu -->
+    <li id="toggleDistributionSubMenu()" id="distribution-records">
+        <i class="fas fa-clipboard-list"></i> Distribution Records
+    </li>
+
+
+     <!-- Farmers Activities Menu -->
+     <li id="farmersActivitiesMenu" onclick="window.location.href='farmers-record.html'">
+        <i class="fas fa-seedling"></i> Farmers Activities
+    </li>
+
+    <!-- User Management Menu -->
+    <li id="userManagementMenu" onclick="window.location.href='manage_users.html'">
+        <i class="fas fa-users-cog"></i> User Management
+    </li>
+
+    <li id="passwordManagementMenu" onclick="window.location.href='admin_password_management.html'">
+        <i class="fas fa-key"></i> Password Management
+    </li>
+
+    <!-- Logout Menu -->
+    <li id="logoutMenu" onclick="window.location.href='logout.php'">
+        <i class="fas fa-sign-out-alt"></i> Logout
+    </li>
+</ul>
+</div>
+
+  <!-- Buttons to Create Batch and View Summary -->
+<div class="button-container">
+    <!-- Create Batch Button -->
+    <button class="create-batch-btn" onclick="openBatchModal()">
+        <i class="fas fa-plus-circle"></i> Create Batch
+    </button>
+
+    <!-- View Summary Button -->
+    <button class="summary-btn" onclick="window.location.href='summary.html'">
+        <i class="fas fa-search"></i> Search Records
+
+    </button>
+</div>
+
+    <div class="batch-container" id="batchContainer">
+            <!-- Batches will be displayed here -->
+
+            <button onclick="openDistributionModal()">Add Distribution</button>
+
+             <div class="batch-box">
+                <div class="icon-container">
+                    <i class="fas fa-edit edit-icon" onclick="editBatch('BatchID')"></i>
+                    <i class="fas fa-trash delete-icon" onclick="deleteBatch('BatchID')"></i>
+
+            
+                </div>
+            </div> 
+
+            <div id="batchList"></div>
+
+            <!-- CV Export Button -->
+        <div class="cv-button-wrapper">
+            <button class="cv-button" onclick="downloadCV()">
+                <i class="fas fa-file-download"></i> Export CV
+            </button>   
+        </div>
+        </div>
+
+        <div id="historySection" style="display:none;">
+            <h2>Distribution History</h2>
+            <div id="historyTimeline"></div>
+            
+            <div>
+                <label for="historyStartDate">Start Date:</label>
+                <input type="date" id="historyStartDate" onchange="filterHistoryByDateRange()">
+                <label for="historyEndDate">End Date:</label>
+                <input type="date" id="historyEndDate" onchange="filterHistoryByDateRange()">
+            </div>
+            <div class="history-timeline" id="historyTimeline">
+                <!-- History records will be displayed here -->
+                <div class="history-item">
+            </div>
+        </div>
+    </div>
+
+<!-- Modal for Creating New Batch -->
+<div id="batchModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeBatchModal()">&times;</span>
+        <h2>Create New Distribution Batch</h2>
+
+        <!-- Create New Batch Form -->
+        <form action="create_batch.php" method="POST" id="batchForm">
+            <label for="batchName">Batch Name</label>
+            <select id="batchName" name="batchName" required>
+                <option value="" disabled selected>Select Batch Name</option>
+                <option value="Cash">Cash</option>
+                <option value="Seeds">Seeds</option>
+                <option value="Fertilizer">Fertilizer</option>
+                <option value="Pesticide">Pesticide</option>
+                <option value="Herbicide">Herbicide</option>
+                <option value="Rodenticide">Rodenticide</option>
+            </select>
+            
+            <label for="batchNumber">Batch Number</label>
+            <input type="text" id="batchNumber" name="batchNumber" required>
+
+            <label for="totalQuantity">Total Quantity</label>
+            <input type="number" id="totalQuantity" name="totalQuantity" required>
+
+            <button type="submit" class="button">Create Batch</button>
+       
+        </form>
+        
+
+        <div id="batchContainer"></div>
+    </div>
+</div>
+
+<!-- Modal for Adding Distribution Record -->
+<div id="distributionModal" class="modal">
+    <div class="modal-content">
+        <span class="modal-close" onclick="closeDistributionModal()">&times;</span>
+        <h2>Add Distribution Record</h2>
+
+        <input type="hidden" id="batchId" name="batchId" value="">
+
+        <!-- Add Distribution Record Form -->
+        <form action="adddistribution.php" method="POST" id="distributionForm">
+            <!-- Hidden input for batchId -->
+
+            <label for="distributionBatchId">Batch ID</label>
+            <select id="distributionBatchId"></select>
+
+            <label for="distributedQuantity">Distributed Quantity</label>
+            <input type="number" id="distributedQuantity" name="distributedQuantity" required>
+
+            <label for="barangaySelect">Select Barangay</label>
+            <select id="barangaySelect" onchange="fetchFarmersByBarangay()">
+                <option value="" disabled selected>Select your Barangay</option>
+                <option value="Balacanas">Balacanas</option>
+                <option value="Dayawan">Dayawan</option>
+                <option value="Katipunan">Katipunan</option>
+                <option value="Kimaya">Kimaya</option>
+                <option value="Poblacion 1">Poblacion 1</option>
+                <option value="Poblacion 2">Poblacion 2</option>
+                <option value="Poblacion 3">Poblacion 3</option>
+                <option value="San Martin">San Martin</option>
+                <option value="Tambobong">Tambobong</option>
+                <option value="Imelda">Imelda</option>
+                <option value="Looc">Looc</option>
+            </select>
+
+            <!-- Farmer Selection (Dynamic) -->
+            <div id="farmerSelectionContainer" style="display: none; margin-top: 20px;">
+                <label>Select Farmers from the chosen Barangay</label>
+                <div id="farmerCheckboxes" style="display: flex; flex-wrap: wrap; gap: 10px;">
+                    <!-- Farmers' checkboxes will be dynamically populated here -->
+                </div>
+            </div>
+
+            <label for="distributionDate">Date</label>
+            <input type="date" id="distributionDate" name="distributionDate" required>
+
+            <button type="submit" class="button">Submit</button>
+        </form>
+    </div>
+</div>
+
+    <div id="editBatchModal" style="display:none;">
+        <h3>Edit Batch</h3>
+        <input id="editBatchName" type="text" placeholder="Batch Name">
+        <input id="editTotalQuantity" type="number" placeholder="Total Quantity">
+        <button id="saveBatchChanges">Save Changes</button>
+        <button onclick="closeEditBatchModal()">Cancel</button>
+    </div>
+
+    <!-- Edit Distribution Modal -->
+<div id="editDistributionModal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3>Edit Distribution Quantity</h3>
+
+        <label for="editDistributedQuantity">Quantity:</label>
+        <input type="number" id="editDistributedQuantity" min="1" required>
+        <p><strong>Distributed To:</strong> <span id="displayDistributedTo"></span></p>
+        <p><strong>Date Distributed:</strong> <span id="displayDistributionDate"></span></p>
+        <div class="modal-actions">
+            <button id="saveDistributionChanges">Save Changes</button>
+            <button onclick="closeEditDistributionModal()">Cancel</button>
+        </div>
+    </div>
+
+    <button onclick="deleteActivity()">Delete</button>
+
+
+    <script>
+        // Debounce timer for filtering
+        let debounceTimer = null;
+
+         // Generate a unique batch ID
+         function generateBatchId() {
+            return 'BATCH-' + new Date().getTime();
+        }
+
+
+// This function is triggered when a Barangay is selected
+async function loadFarmersByBarangay(barangay) {
+    try {
+        // Fetch farmers based on the selected Barangay
+        const response = await fetch(`fetch_users_by_barangay.php?barangay=${barangay}`);
+        const farmers = await response.json();
+        
+        const farmerSelectionContainer = document.getElementById('farmerSelectionContainer');
+        const farmerCheckboxesDiv = document.getElementById('farmerCheckboxes');
+        farmerCheckboxesDiv.innerHTML = ''; // Clear any existing checkboxes
+
+        if (farmers.length === 0) {
+            farmerCheckboxesDiv.innerHTML = '<p>No farmers found for this Barangay.</p>';
+        } else {
+            // Display checkboxes for each farmer
+            farmers.forEach(farmer => {
+                const checkboxContainer = document.createElement('div');
+                checkboxContainer.classList.add('checkbox-container');
+                checkboxContainer.style.display = 'flex'; // Flexbox to align checkboxes nicely
+                
+                const checkbox = document.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.name = 'distributedTo[]'; // Name for the array of selected farmers
+                checkbox.value = farmer.rsba_number; // Value is RSBA number
+                checkbox.id = `farmer-${farmer.rsba_number}`; // For accessibility (id for label)
+
+                const label = document.createElement('label');
+                label.textContent = `${farmer.first_name} ${farmer.last_name} (RSBA: ${farmer.rsba_number})`;
+                label.setAttribute('for', checkbox.id); // Linking the label to checkbox for better accessibility
+
+                checkboxContainer.appendChild(checkbox);
+                checkboxContainer.appendChild(label);
+                
+                farmerCheckboxesDiv.appendChild(checkboxContainer);
+            });
+        }
+        
+        // Show the farmer selection container once farmers are loaded
+        farmerSelectionContainer.style.display = 'block';
+    } catch (error) {
+        console.error('Error fetching farmers:', error);
+        alert('An error occurred while fetching farmers.');
+    }
+}
+
+// Event listener for Barangay dropdown change
+document.getElementById('barangaySelect').addEventListener('change', (e) => {
+    const barangay = e.target.value;
+    
+    if (barangay) {
+        loadFarmersByBarangay(barangay); // Load farmers based on the selected Barangay
+    } else {
+        document.getElementById('farmerSelectionContainer').style.display = 'none'; // Hide farmer selection if no Barangay is selected
+    }
+});
+
+
+async function fetchBatches() {
+    try {
+        const response = await fetch('fetch_batches.php');
+        
+        // Check if the response is JSON
+        if (!response.ok) {
+            throw new Error('Failed to fetch batches');
+        }
+
+        const batches = await response.json();
+
+        if (Array.isArray(batches)) {
+            batches.forEach(batch => {
+                console.log(batch);  // Process your batches here
+            });
+        } else {
+            throw new Error('Expected an array of batches');
+        }
+    } catch (error) {
+        console.error('Error fetching batches:', error);
+    }
+}
+
+async function fetchFarmers(barangay) {
+    try {
+        const response = await fetch(`fetch_farmers.php?barangay=${barangay}`);
+        
+        // Check if the response is JSON
+        if (!response.ok) {
+            throw new Error('Failed to fetch farmers');
+        }
+
+        const farmers = await response.json();
+
+        if (Array.isArray(farmers)) {
+            // Process the farmers data here
+        } else {
+            throw new Error('Expected an array of farmers');
+        }
+    } catch (error) {
+        console.error('Error fetching farmers:', error);
+    }
+}
+
+
+
+// Function to save batch to backend (create_batch.php)
+function saveBatchToBackend(batchName, batchNumber, totalQuantity) {
+    const data = {
+        batchName: batchName,
+        batchNumber: batchNumber,
+        totalQuantity: totalQuantity
+    };
+
+    fetch('create_batch.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data) // Send data as JSON
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            console.log("Batch created successfully, Batch ID: " + data.batch_id);
+            // Use the batch_id returned by the server
+            // You can now update your UI or localStorage with the new batch_id if needed
+        } else {
+            console.error("Error creating batch: " + data.message);
+        }
+    })
+    .catch(error => {
+        console.error("Request failed", error);
+    });
+}
+
+// Function to open the "Create New Distribution Batch" modal
+        function openBatchModal() {
+            const batchModal = document.getElementById('batchModal');
+            batchModal.style.display = 'block'; // Open the modal
+        }
+
+        // Optional: Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        };
+
+// Function to open the distribution modal and populate it with data
+function openDistributionModal(batchId) {
+    document.getElementById('batchId').value = batchId;
+    document.getElementById('distributionModal').style.display = 'block';
+
+    fetch(`get_batch_details.php?batchId=${batchId}`)
+        .then(response => response.json())
+        .then(data => {
+            const distributionBatchId = document.getElementById('distributionBatchId');
+            distributionBatchId.innerHTML = `<option value="${data.batch_id}">${data.batch_name}</option>`;
+
+            document.getElementById('distributionModal').style.display = 'block';
+        })
+        .catch(error => console.error('Error fetching batch details:', error));
+}
+
+
+function createNewBatch() {
+    const batchName = document.getElementById('batchName').value;
+    const batchNumber = document.getElementById('batchNumber').value;
+    const totalQuantity = parseInt(document.getElementById('totalQuantity').value);
+
+    if (!batchName || !batchNumber || totalQuantity <= 0) {
+        alert('Please fill out all fields with valid data!');
+        return;
+    }
+
+    const batchId = 'BATCH-' + new Date().getTime();  // Generate the batchId
+
+    console.log("Generated batchId:", batchId);
+
+    const formData = new FormData();
+    formData.append('batchId', batchId);  // Ensure batchId is being appended
+    formData.append('batchName', batchName);
+    formData.append('batchNumber', batchNumber);
+    formData.append('totalQuantity', totalQuantity);
+
+
+    // Send data to backend
+    fetch('create_batch.php', {
+        method: 'POST',
+        body: formData,
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert(`Batch created successfully! Batch ID: ${data.batchId}`);
+
+                loadBatches();
+                window.location.href = 'add-distribution.html';
+
+            } else {
+                alert('Error: ' + data.message);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+
+// Function to close batch modal
+function closeBatchModal() {
+    const modal = document.getElementById('batchModal');
+    modal.style.display = 'none';
+}
+
+function openEditBatchModal(batchId) {
+    const modal = document.getElementById('editBatchModal');
+    const batch = getBatchById(batchId); // Replace with the actual method to fetch batch details
+    document.getElementById('editBatchName').value = batch.batchName;
+    document.getElementById('editTotalQuantity').value = batch.totalQuantity;
+    modal.style.display = 'block';
+}
+
+
+// Function to add a new distribution record
+function addDistributionRecord() {
+    const batchId = document.getElementById('distributionBatchId').value;
+    const distributedQuantity = parseInt(document.getElementById('distributedQuantity').value, 10);
+    const distributedTo = document.getElementById('distributedTo').value.trim();
+    const distributionDate = document.getElementById('distributionDate').value;
+
+    // Validate input
+    if (!distributedTo || isNaN(distributedQuantity) || distributedQuantity <= 0 || !distributionDate) {
+        alert('Please fill in all fields with valid values.');
+        return;
+    }
+
+    // Prepare data to send to PHP
+    const formData = new FormData();
+    formData.append('distributionBatchId', batchId);
+    formData.append('distributedQuantity', distributedQuantity);
+    formData.append('distributedTo', distributedTo);
+    formData.append('distributionDate', distributionDate);
+
+    // Send the data to PHP using AJAX (fetch)
+    fetch('adddistribution.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        alert(data); // Show the server response
+        closeDistributionModal(); // Close the modal after submission
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('There was an error with the distribution record.');
+    });
+}
+
+
+let distributionBatches = [];  // Global variable to store fetched batch data
+
+// Function to load batch data from the backend
+function loadBatches() {
+    fetch('get_batches.php')
+        .then(response => response.json())
+        .then(batches => {
+            distributionBatches = batches;  // Store the fetched data
+            updateBatchDisplay();  // Call the display update function
+        })
+        .catch(error => console.error('Error loading batches:', error));
+}
+
+    // Function to update the batch details in the modal (or elsewhere on the page)
+    function updateDistributionModal(batchId) {
+        const batch = distributionBatches.find(b => b.batchId === batchId);
+        const distributionsTable = document.getElementById('distributionsTable').querySelector('tbody');
+        const totalQuantitySpan = document.getElementById('totalQuantity');
+        const noDataMessage = document.getElementById('noDataMessage');
+
+        // Clear the previous distribution records
+        distributionsTable.innerHTML = '';
+        let totalDistributed = 0;
+
+        // Filter the distribution records for this batch
+        const batchDistributions = batch.distributions;
+
+        if (batchDistributions.length === 0) {
+            noDataMessage.style.display = 'block';
+        } else {
+            noDataMessage.style.display = 'none';
+
+            // Loop through each distribution record and display it
+            batchDistributions.forEach(record => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${record.distributedTo}</td> <!-- Farmer's Name -->
+                    <td>${record.distributedQuantity}</td> <!-- Quantity -->
+                    <td>${record.dateDistributed}</td> <!-- Distribution Date -->
+                `;
+                distributionsTable.appendChild(row);
+                totalDistributed += record.distributedQuantity;
+            });
+
+            // Update total distributed quantity
+            totalQuantitySpan.textContent = totalDistributed;
+        }
+    }
+
+// Function to update the batch display dynamically
+function updateBatchDisplay() {
+    const batchContainer = document.getElementById('batchContainer');
+    batchContainer.innerHTML = '';  // Clear previous batches
+
+    // Check if there are batches to display
+    if (Array.isArray(distributionBatches) && distributionBatches.length > 0) {
+        distributionBatches.forEach(batch => {
+            const batchBox = document.createElement('div');
+            batchBox.className = 'batch-box';
+
+            batchBox.innerHTML = `
+                <h3>${batch.batchName}</h3>
+                <p>Total: ${batch.totalQuantity} | Remaining: ${batch.remainingQuantity}</p>
+            `;
+
+            // Add icons for actions (edit, delete, CSV)
+            const iconContainer = document.createElement('div');
+            iconContainer.className = 'icon-container';
+
+            // Edit icon
+            const editIcon = document.createElement('i');
+            editIcon.className = 'fas fa-edit';
+            editIcon.title = 'Edit Batch';
+            editIcon.onclick = () => openEditBatchModal(batch.batchId);
+            iconContainer.appendChild(editIcon);
+
+            // Delete icon
+            const deleteIcon = document.createElement('i');
+            deleteIcon.className = 'fas fa-trash';
+            deleteIcon.title = 'Delete Batch';
+            deleteIcon.onclick = () => deleteBatch(batch.batchId);
+            iconContainer.appendChild(deleteIcon);
+
+            // CSV download icon
+            const csvIcon = document.createElement('i');
+            csvIcon.className = 'fas fa-file-download';
+            csvIcon.title = 'Download CSV';
+            csvIcon.onclick = () => downloadBatchCSV(batch.batchId);
+            iconContainer.appendChild(csvIcon);
+
+            batchBox.appendChild(iconContainer);
+
+            // Add distribution button
+            const addDistributionButton = document.createElement('button');
+            addDistributionButton.textContent = 'Add Distribution';
+            addDistributionButton.onclick = () => openDistributionModal(batch.batchId);
+            batchBox.appendChild(addDistributionButton);
+
+            // Add batch details and distributions
+            const detailsDiv = document.createElement('div');
+            detailsDiv.className = 'batch-details';
+            detailsDiv.style.display = 'none';  // Hidden by default
+
+            let tableHtml = '';
+            if (batch.distributions.length > 0) {
+                tableHtml = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Quantity</th>
+                                <th>Farmer</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        ${batch.distributions.map(distribution => `
+                            <tr>
+                                <td>${distribution.quantity}</td>
+                                <td>${distribution.farmer}</td>
+                                <td>${distribution.date}</td>
+                                <td>
+                                    <i class="fas fa-edit" title="Edit Distribution" onclick="editDistribution(${distribution.id})"></i>
+                                    <i class="fas fa-trash" title="Delete Distribution" onclick="deleteDistribution(${distribution.id})"></i>
+                                </td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            `;
+        } else {
+                tableHtml = '<p>No distributions found for this batch.</p>';
+            }
+
+            detailsDiv.innerHTML = tableHtml;
+            batchBox.appendChild(detailsDiv);
+
+            batchContainer.appendChild(batchBox);
+        });
+    } else {
+        batchContainer.innerHTML = '<p>No batches available. Please create a new batch.</p>';
+    }
+}
+
+// Fetch data on page load
+document.addEventListener('DOMContentLoaded', loadBatches);
+
+// Function to fetch batches and display them in the batch container
+function fetchBatches() {
+    // Make an AJAX request to fetch batches from the server
+    fetch('fetch_batches.php')
+        .then(response => response.json())
+        .then(data => {
+            // Get the batch container element
+            const batchContainer = document.getElementById('batchContainer');
+            
+            // Clear any existing content in the batch container
+            batchContainer.innerHTML = '';
+
+            // Check if the server returned batches
+            if (data.status === 'success' && Array.isArray(data.batches)) {
+                // Loop through each batch and generate a batch-box
+                data.batches.forEach(batch => {
+                    // Create a new batch box
+                    const batchBox = document.createElement('div');
+                    batchBox.className = 'batch-box';
+
+                    // Add batch details to the batch box
+                    batchBox.innerHTML = `
+                        <h3>${batch.batch_name}</h3>
+                        <p>Total: ${batch.total_quantity} | Remaining: ${batch.remaining_quantity}</p>
+                        <div class="icon-container">
+                            <i class="fas fa-edit edit-icon" title="Edit Batch"></i>
+                            <i class="fas fa-trash delete-icon" title="Delete Batch"></i>
+                            <i class="fas fa-file-download" title="Download Batch CSV"></i>
+                        </div>
+                        <button onclick="openDistributionModal(${batch.batch_id})">Add Distribution</button>
+                        <div class="batch-details" id="details-${batch.batch_id}" style="display: none;">
+                            <p>No distributions added yet.</p>
+                        </div>
+                    `;
+
+                    // Append the batch box to the batch container
+                    batchContainer.appendChild(batchBox);
+                });
+            } else {
+                // If no batches were found, display a message
+                batchContainer.innerHTML = '<p>No batches available.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching batches:', error);
+        });
+}
+
+// Call the fetchBatches function to load batches when the page loads
+window.onload = fetchBatches;
+
+// Call fetchBatches() when the page loads or when needed
+window.onload = function() {
+    fetchBatches();
+};
+
+    // Toggle batch details view
+    function toggleBatchDetails(batchId) {
+        const allDetails = document.querySelectorAll('.batch-details');
+        allDetails.forEach(details => (details.style.display = 'none'));
+
+        const detailsDiv = document.getElementById(`details-${batchId}`);
+        if (detailsDiv) {
+            detailsDiv.style.display = 'block';
+        }
+    }
+
+    // Populate dropdown for batch selection
+    function populateBatchDropdown() {
+        const batchSelect = document.getElementById('distributionBatchId');
+        batchSelect.innerHTML = '';
+        distributionBatches.forEach(batch => {
+            const option = document.createElement('option');
+            option.value = batch.batchId;
+            option.innerText = batch.batchName;
+            batchSelect.appendChild(option);
+        });
+    }
+
+document.addEventListener('DOMContentLoaded', function () {
+
+    // Function to open the Modal
+    function openEditBatchModal(batchId, batchName, totalQuantity) {
+        document.getElementById('editBatchId').value = batchId;
+        document.getElementById('editBatchName').value = batchName;
+        document.getElementById('editTotalQuantity').value = totalQuantity;
+        document.getElementById('editBatchModal').style.display = 'block';
+    }
+
+    // Function to close the Edit Batch Modal
+    function closeEditBatchModal() {
+        document.getElementById('editBatchModal').style.display = 'none';
+    }
+
+    // Function to update a batch
+    function updateBatch() {
+        const batchId = document.getElementById('editBatchId').value;
+        const batchName = document.getElementById('editBatchName').value;
+        const totalQuantity = document.getElementById('editTotalQuantity').value;
+
+        fetch('update_batch.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: `batchId=${batchId}&batchName=${batchName}&totalQuantity=${totalQuantity}`,
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                alert('Batch updated successfully.');
+                closeEditBatchModal();
+                // Refresh or reload the batch list
+                getBatches();
+            } else {
+                alert(data.message);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+    getBatches();
+});
+
+fetch('get_batches.php')
+    .then(response => response.json())
+    .then(batches => {
+        console.log('Batches response:', batches); // Debug response
+        batchList.innerHTML = ''; // Clear the list
+        if (Array.isArray(batches)) {
+            batches.forEach(batch => {
+                const batchItem = `
+                    <div class="batch-item">
+                        <h3>${batch.batch_name} (Batch Number: ${batch.batch_number})</h3>
+                        <p>Total Quantity: ${batch.total_quantity}</p>
+                        <p>Remaining Quantity: ${batch.remaining_quantity}</p>
+                        <button onclick="openEditBatchModal('${batch.batch_id}', '${batch.batch_name}', '${batch.total_quantity}')">Edit</button>
+                        <button onclick="deleteBatch('${batch.batch_id}')">Delete</button>
+                    </div>
+                `;
+                batchList.innerHTML += batchItem;
+            });
+        } else {
+            console.error('Expected an array but got:', batches);
+        }
+    })
+    .catch(error => console.error('Error fetching batches:', error));
+
+
+    // Load batches on page load
+    getBatches();
+
+    // Add event listeners for modal close and update batch
+
+});
+
+
+// Function to open the Add Distribution Modal
+function openDistributionModal() {
+    const distributionModal = document.getElementById("distributionModal");
+    distributionModal.style.display = "block";
+}
+
+// Function to close the Add Distribution Modal
+function closeDistributionModal() {
+    const distributionModal = document.getElementById("distributionModal");
+    distributionModal.style.display = "none";
+}
+
+// Function to edit a batch
+function editBatch(batchId) {
+    // Fetch batch details from the server or use local data to populate fields
+    fetch(`get_batch_details.php?batchId=${batchId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === "success") {
+                // Populate the modal or form fields with the batch data
+                document.getElementById("batchName").value = data.batch_name;
+                document.getElementById("batchNumber").value = data.batch_number;
+                document.getElementById("totalQuantity").value = data.total_quantity;
+                
+                // Show the batch modal with populated data
+                const batchModal = document.getElementById("batchModal");
+                batchModal.style.display = "block";
+            } else {
+                console.error("Error fetching batch details: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Request failed", error);
+        });
+}
+
+</script>  
+</body>
+</html>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+
+
+ 

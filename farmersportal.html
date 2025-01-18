@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer's Portal - Welcome</title>
+</head>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #FFFFFF;
+            color: #333;
+            padding: 0 20px;
+        }
+
+        .brand {
+        display: block;
+        transition: display 0.3s ease;
+    }
+
+    @media (max-width: 768px) {
+        .menu.active + .brand {
+            display: none;
+        }
+    }
+
+    
+
+
+        h2 {
+            color: #4CAF50;
+            font-size: 2rem;
+            margin-bottom: 15px;
+        }
+
+        /* Navbar */
+        nav {
+            background-color: #4CAF50;
+        padding: 10px 20px;
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: fixed; /* Make the navbar fixed at the top */
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000; /* Ensure it's above other elements */;
+        }
+
+        nav .brand {
+            font-size: 1.8rem;
+            font-weight: bold;
+        }
+
+        nav .menu {
+            display: flex;
+            gap: 20px;
+        }
+
+        nav .menu a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        nav .menu a:hover {
+            color: #ffeb3b;
+        }
+
+        .toggle-btn {
+            display: none;
+        }
+
+        /* Profile Section */
+        .profile-container {
+            background-color: #fff;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 350px;
+            margin: 30px auto;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-container:hover {
+            transform: scale(1.05);
+        }
+
+        .profile-container h2 {
+            font-size: 1.6rem;
+            color: #2e8b57;
+        }
+
+        .profile-container img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .profile-container img:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-details p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        /* Farmer's Activities Section */
+        .uploads-section {
+            background-color: #ffffff;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .uploads-section h2 {
+            color: #4CAF50;
+            margin-bottom: 20px;
+        }
+
+        .uploads-section label {
+            font-size: 1.1rem;
+            margin-bottom: 5px;
+            display: block;
+            color: #2e8b57;
+        }
+
+        .uploads-section input,
+        .uploads-section select,
+        .uploads-section textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            font-size: 1rem;
+        }
+
+        .uploads-section button {
+            background-color: #2E8B57;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .uploads-section button:hover {
+            background-color: #3CB371;
+        }
+
+        /* Timeline Section */
+        .timeline-container {
+            background-color: #e8f5e9;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .timeline-container h2 {
+            color: #388E3C;
+            margin-bottom: 15px;
+        }
+
+        .activity {
+            background-color: white;
+            margin-bottom: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .activity h3 {
+            font-size: 1.2rem;
+            color: #388E3C;
+            margin-bottom: 10px;
+        }
+
+        .activity img {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+
+        .activity img:hover {
+            transform: scale(1.05);
+        }
+
+        .activity p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+        .timestamp {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 5px;
+        }
+
+        /* Search Section */
+        .search-section {
+            background-color: white;
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            justify-content: center;
+        }
+
+        .search-section label {
+            font-size: 1rem;
+            color: #388E3C;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .search-section input {
+            padding: 8px;
+            font-size: 1rem;
+            border-radius: 6px;
+            width: 30%;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+        }
+
+        .search-section button {
+            background-color: #2E8B57;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .search-section button:hover {
+            background-color: #3CB371;
+        }
+
+        /* Modal for Full Screen Image */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+        }
+
+        .close {
+            color: white;
+            font-size: 40px;
+            font-weight: bold;
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            cursor: pointer;
+        }
+
+        /* Media Query for Mobile */
+        @media (max-width: 767px) {
+            .uploads-section,
+            .profile-container {
+                width: 100%;
+                padding: 15px;
+            }
+
+            nav .toggle-btn {
+                display: block;
+                font-size: 1.8rem;
+            }
+
+            nav .menu {
+                display: none;
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            nav .menu.active {
+                display: flex;
+                flex-direction:row;
+            }
+        }
+
+        form {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    color: #333;
+}
+
+select,
+input[type="file"],
+textarea,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+input[type="file"] {
+    padding: 5px;
+}
+
+textarea {
+    height: 100px;
+    resize: vertical;
+}
+
+button {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #218838;
+}
+
+@media (max-width: 600px) {
+    form {
+        padding: 15px;
+    }
+
+    button {
+        font-size: 16px;
+    }
+}
+
+
+        
+
+
+
+
+</style>
+
+</head>
+
+<body>
+
+     <!-- Navigation Bar -->
+     <nav>
+        <div class="brand">Farmer's Portal</div>
+        <div class="toggle-btn" onclick="toggleMenu()">☰</div>
+        <div class="menu">
+            <a href="#profile-section">Profile</a>
+            <a href="#activities-section">Activity Posting</a>
+            <a href="#timeline-section">Timeline</a>
+            <a href="logout.php">Logout</a>
+        </div>
+    </nav>
+
+<!-- Profile Section -->
+    <div id="profile-section" class="profile-container">
+        <img src="/Project_ARMS/uploads/default.jpg" id="profile-picture" alt="Profile Picture">
+        <h2>Welcome, <span id="full-name"></span>!</h2>
+        <div class="profile-details">
+            <p><strong>RSBA Number:</strong> <span id="rsba-number"></span></p>
+            <p><strong>Name:</strong> <span id="full-name-details"></span></p>
+            <p><strong>Address:</strong> <span id="address"></span></p>
+            <p><strong>Contact No.:</strong> <span id="contact-no"></span></p>
+            <p><strong>Barangay:</strong> <span id="barangay"></span></p>
+            <p><strong>Farm Location:</strong> <span id="farm-location"></span></p>
+            <p><strong>Farm Size:</strong> <span id="farm-size"></span> hectares</p>
+        </div>
+        <form action="upload_picture.php" method="POST" enctype="multipart/form-data">
+            <input type="file" name="profile_picture" accept="image/*">
+            <button type="submit">Upload Profile Picture</button>
+        </form>
+    </div>
+
+        <!-- Farmer's Activities Section -->
+        <div id="activities-section" class="uploads-section">
+            <h2>Farmer's Activities</h2>
+            <form action="upload_activity.php" method="POST" enctype="multipart/form-data">
+                <label for="activityType">Activity Type</label>
+                <select id="activityType" name="activityType" required>
+                    <option value="Land Preparation">Land Preparation</option>
+                    <option value="Seeding">Seeding</option>
+                    <option value="Weeding">Weeding</option>
+                    <option value="Fertilizing">Fertilizing</option>
+                    <option value="Spraying">Spraying</option>
+                    <option value="Harvesting">Harvesting</option>
+                </select>
+    
+                <label for="activityImage">Activity Image</label>
+                <input type="file" id="activityImage" name="activityImage" accept="image/*" required>
+    
+                <label for="activityCaption">Caption</label>
+                <textarea id="activityCaption" name="activityCaption" placeholder="Write a caption..." required></textarea>
+    
+                <button type="submit">Post Activity</button>
+            </form>
+        </div>
+
+           <!-- Search Section -->
+           <div class="search-section">
+            <label for="searchDate">Search by Date:</label>
+            <input type="date" id="searchDate">
+
+            <label for="searchType">Search by Activity Type:</label>
+            <input type="text" id="searchType" placeholder="Enter activity type">
+
+            <button type="button" onclick="searchActivities()">Search</button>
+
+
+    <!-- Timeline Section -->
+    <div id="timeline-section" class="timeline-container">
+        <h2>Activity Timeline</h2>
+        <div id="timelineFeed">
+            <!-- Activities will be dynamically loaded here -->
+        </div>
+    </div>
+
+            </div>
+
+        <!-- Modal for Full Screen Image -->
+        <div id="imageModal" class="modal">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <img class="modal-content" id="modalImage" />
+        </div>
+    </div>
+
+    <div id="activityFeed"></div>
+<div id="timelineFeed"></div>
+
+<script>
+
+     // Toggle menu for mobile view
+     function toggleMenu() {
+            const menu = document.querySelector('nav .menu');
+            menu.classList.toggle('active');
+        }
+
+    // Fetch profile and activity data
+    fetch('profile.php')
+        .then(response => response.json())
+        .then(data => {
+            // Profile Data
+            document.getElementById('full-name').textContent = data.user.first_name + ' ' + data.user.middle_Initial + ' ' + data.user.last_name;
+            document.getElementById('rsba-number').textContent = data.user.rsba_number;
+            document.getElementById('address').textContent = data.user.address ?? 'Not provided';
+            document.getElementById('contact-no').textContent = data.user.contact_no ?? 'Not provided';
+            document.getElementById('barangay').textContent = data.user.barangay ?? 'Not provided';
+            document.getElementById('farm-location').textContent = data.user.farm_location ?? 'Not provided';
+            document.getElementById('farm-size').textContent = data.user.farm_size ?? 'Not provided';
+
+            // Display profile picture
+            document.getElementById('profile-picture').src = 'uploads/' + (data.user.profile_picture ?? 'default.jpg');
+
+            // Activities Feed
+            const activityFeed = document.getElementById('activityFeed');
+            if (data.activities.length > 0) {
+                data.activities.forEach(activity => {
+                    const activityData = {
+                        type: activity.activity_type,
+                        image: 'activity_uploads/' + activity.activity_image,
+                        caption: activity.activity_caption,
+                    };
+                    addActivityToFeedGeneric('activityFeed', activityData);
+                });
+            } else {
+                activityFeed.innerHTML = '<p>No activities posted yet.</p>';
+            }
+        })
+        .catch(error => console.error('Error fetching data:', error));
+
+  // Fetch additional activities data
+document.addEventListener("DOMContentLoaded", function () {
+    fetch('get_activities.php')
+        .then(response => response.json())
+        .then(data => {
+            const timelineFeed = document.getElementById('timelineFeed');
+            timelineFeed.innerHTML = ''; // Clear any previous content
+
+            if (data.activities && data.activities.length > 0) {
+                data.activities.forEach(activity => {
+                    const activityData = {
+                        type: activity.activity_type,
+                        image: 'activity_uploads/' + activity.activity_image, // Corrected path
+                        caption: activity.activity_caption,
+                        timestamp: activity.timestamp,
+                    };
+                    addActivityToFeedGeneric('timelineFeed', activityData, true, activity.activity_id ?? null);
+                });
+            } else {
+                timelineFeed.innerHTML = '<p>No activities posted yet.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching activities:', error);
+        });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetchProfileData();
+    fetchActivitiesData();
+});
+
+function fetchProfileData() {
+    fetch('profile.php')
+        .then(response => response.json())
+        .then(data => {
+            const user = data.user;
+            document.getElementById('full-name').textContent = `${user.full_name}`;
+            document.getElementById('rsba-number').textContent = user.rsba_number;
+            document.getElementById('full-name-details').textContent = `${user.first_name} ${user.middle_Initial} ${user.last_name}`;
+            document.getElementById('address').textContent = user.home_address ?? 'Not provided';
+            document.getElementById('contact-no').textContent = user.contact_number ?? 'Not provided';
+            document.getElementById('barangay').textContent = user.barangay ?? 'Not provided';
+            document.getElementById('farm-location').textContent = user.farm_location ?? 'Not provided';
+            document.getElementById('farm-size').textContent = user.farm_size ?? 'Not provided';
+            document.getElementById('profile-picture').src = `uploads/${user.profile_picture ?? 'default.jpg'}`;
+        })
+        .catch(error => console.error('Error fetching profile data:', error));
+}
+
+// Fetch additional activities data
+document.addEventListener("DOMContentLoaded", function () {
+    fetch('get_activities.php')
+        .then(response => response.json())
+        .then(data => {
+            const timelineFeed = document.getElementById('timelineFeed');
+            timelineFeed.innerHTML = ''; // Clear any previous content
+
+            if (data.activities && data.activities.length > 0) {
+                data.activities.forEach(activity => {
+                    const activityData = {
+                        type: activity.activity_type || 'Unknown Type', // Fallback value
+                        image: activity.activity_image
+                            ? 'activity_uploads/' + activity.activity_image
+                            : 'default_image.jpg', // Fallback image
+                        caption: activity.activity_caption || 'No caption provided.',
+                        timestamp: activity.timestamp || 'No timestamp provided.',
+                    };
+
+                    // Pass feedId and correct parameters to the function
+                    addActivityToFeedGeneric('timelineFeed', activityData, true, activity.activity_id ?? null);
+                });
+            } else {
+                timelineFeed.innerHTML = '<p>No activities posted yet.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching activities:', error);
+        });
+});
+
+function addActivity() {
+    const activityType = document.getElementById('activityType').value;
+    const activityImageInput = document.getElementById('activityImageInput');
+    const activityCaption = document.getElementById('activityCaption').value;
+    
+
+    if (activityImageInput.files.length === 0 || !activityCaption) {
+        alert("Please select an image and write a caption.");
+        return;
+    }
+
+    const activityImage = activityImageInput.files[0];
+    const activityData = {
+        type: activityType,
+        image: URL.createObjectURL(activityImage),
+        caption: activityCaption,
+    };
+
+    addActivityToFeedGeneric('activityFeed', activityData);
+
+    activityImageInput.value = '';
+    document.getElementById('activityCaption').value = '';
+}
+
+function addActivityToFeedGeneric(feedId, activityData, isTimeline = false, activityId = null) {
+    const feed = document.getElementById(feedId);
+    const activityElement = document.createElement('div');
+    activityElement.classList.add('activity');
+    activityElement.setAttribute('data-id', activityId);  // Add data-id to the activity element
+
+    // Activity Type
+    const activityType = document.createElement('h3');
+    activityType.textContent = activityData.type;
+    activityElement.appendChild(activityType);
+
+    // Activity Image
+    const activityImage = document.createElement('img');
+    activityImage.src = activityData.image;
+    activityImage.alt = 'Activity Image';
+    activityImage.classList.add('activity-image');
+    activityImage.onclick = function () { openModal(this.src); };
+    activityElement.appendChild(activityImage);
+
+    // Activity Caption
+    const activityCaption = document.createElement('p');
+    activityCaption.innerHTML = `<strong>Caption:</strong> ${activityData.caption}`;
+    activityElement.appendChild(activityCaption);
+
+    // Edit and Delete Buttons
+    const editButton = document.createElement('button');
+    editButton.textContent = 'Edit';
+    editButton.onclick = function () {
+        editActivity(activityId);  // Assuming you have an activity ID
+    };
+    activityElement.appendChild(editButton);
+
+    const deleteButton = document.createElement('button');
+    deleteButton.textContent = 'Delete';
+    deleteButton.onclick = function () {
+        deleteActivity(activityId);  // Assuming you have an activity ID
+    };
+    activityElement.appendChild(deleteButton);
+
+    activityElement.appendChild(deleteButton);
+ 
+    feed.appendChild(activityElement);
+}
+
+
+function editActivity(activityId) {
+    // You can fetch the current activity data using the activityId
+    console.log(`Edit activity with ID: ${activityId}`);
+
+    // Example: Fetch activity data from the server
+    fetch(`get_activity.php?id=${activityId}`)
+        .then(response => response.json())
+        .then(data => {
+            const activity = data.activity;
+            // Open a modal with a form to edit the activity details
+            document.getElementById('editActivityType').value = activity.type;
+            document.getElementById('editActivityCaption').value = activity.caption;
+            document.getElementById('editActivityImage').src = `activity_uploads/${activity.image}`;
+            document.getElementById('editActivityModal').style.display = 'block';
+        })
+        .catch(error => console.error('Error fetching activity data:', error));
+}
+document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".delete-button").forEach(button => {
+        button.addEventListener("click", function () {
+            const activityId = this.getAttribute("data-id");
+
+            if (confirm("Are you sure you want to delete this activity?")) {
+                fetch(`delete_activity.php?id=${activityId}`, {
+                    method: 'DELETE'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert("Activity deleted successfully!");
+                            location.reload(); // Refresh the page to update the activity list
+                        } else {
+                            alert("Failed to delete activity. Please try again.");
+                        }
+                    })
+                    .catch(error => {
+                        console.error("Error deleting activity:", error);
+                        alert("An error occurred. Please try again.");
+                    });
+            }
+        });
+    });
+});
+
+
+
+
+ // Search function for activities
+ function searchActivities() {
+    const searchDate = document.getElementById('searchDate').value;
+    const searchType = document.getElementById('searchType').value;
+
+        // Perform search logic (to be implemented)
+        console.log(`Search activities by Date: ${searchDate} and Type: ${searchType}`);
+    }
+
+    function openModal(imageSrc) {
+    const modal = document.getElementById('imageModal');
+    const modalImage = document.getElementById('modalImage');
+    modal.style.display = 'block';
+    modalImage.src = imageSrc;
+}
+
+function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.style.display = 'none';
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetchProfileData(); // Ensure this function is defined elsewhere
+    fetchActivitiesData(); // Now correctly defined
+});
+
+// Define fetchActivitiesData function
+function fetchActivitiesData() {
+    fetch('get_activities.php')
+        .then(response => response.json())
+        .then(data => {
+            const timelineFeed = document.getElementById('timelineFeed');
+            timelineFeed.innerHTML = ''; // Clear any previous content
+
+            if (data.activities && data.activities.length > 0) {
+                data.activities.forEach(activity => {
+                    const activityData = {
+                        type: activity.activity_type || 'Unknown Type', // Fallback value
+                        image: activity.activity_image
+                            ? 'activity_uploads/' + activity.activity_image
+                            : 'default_image.jpg', // Fallback image
+                        caption: activity.activity_caption || 'No caption provided.',
+                        timestamp: activity.timestamp || 'No timestamp provided.',
+                    };
+
+                    // Pass feedId and correct parameters to the function
+                    addActivityToFeedGeneric('timelineFeed', activityData, true, activity.activity_id ?? null);
+                });
+            } else {
+                timelineFeed.innerHTML = '<p>No activities posted yet.</p>';
+            }
+        })
+        .catch(error => {
+            console.error('Error fetching activities:', error);
+        });
+}
+
+    
+</script>   
+</body>
+</html>

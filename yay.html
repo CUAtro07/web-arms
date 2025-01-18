@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add New User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Sidebar styling */
+        .sidebar {
+            width: 200px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            transition: width 0.3s;
+        }
+
+        .sidebar h2 {
+            color: #ffffff;
+            margin-bottom: 30px;
+            margin-left: 1%;
+            text-align: center;
+            font-size: 26px; /* Slightly larger */
+            font-weight: 540;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar ul li {
+            padding: 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .sidebar ul li:hover {
+            background-color: #34495e;
+        }
+
+        .sidebar ul li i {
+            margin-right: 15px;
+            font-size: 18px;
+        }
+
+        /* Form Container */
+        .form-container {
+            margin-left: 220px; /* To avoid overlapping with the sidebar */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh; /* Vertically center */
+        }
+
+        form {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            opacity: 0.8;
+        }
+
+        /* Hide admin-specific fields initially */
+        .admin-fields {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <ul>
+            <li id="dashboardMenu" onclick="window.location.href='dashboard.html'">
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </li>
+            <li id="barangayContainer" onclick="window.location.href='admin.html'">
+                <i class="fas fa-user-friends"></i> Farmers
+            </li>
+            <li id="toggleDistributionSubMenu()">
+                <i class="fas fa-clipboard-list"></i> Distribution Records
+            </li>
+            <li id="farmersActivitiesMenu" onclick="window.location.href='farmers-record.html'">
+                <i class="fas fa-seedling"></i> Farmers Activities
+            </li>
+            <li id="userManagementMenu" onclick="window.location.href='manage_users.html'">
+                <i class="fas fa-users-cog"></i> User Management
+            </li>
+            <li id="logoutMenu" onclick="window.location.href='logout.php'">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content (Form Container) -->
+    <div class="form-container">
+        <!-- Reset Password Form -->
+        <form id="addUserForm">
+            <h1>Add New User</h1>
+
+            <label for="userType">User Type:</label>
+            <select id="userType" name="user_type" required onchange="toggleAdminFields()">
+                <option value="" disabled selected>Select user type</option>
+                <option value="admin">Admin</option>
+                <option value="farmer">Farmer</option>
+            </select>
+
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="user_id" placeholder="Enter your User ID or RSBA Number" required>
+
+            <label for="newPassword">New Password:</label>
+            <input type="password" id="newPassword" name="new_password" placeholder="Enter new password" required>
+
+            <!-- Admin-specific fields -->
+            <div class="admin-fields">
+                <label for="adminName">Admin Name:</label>
+                <input type="text" id="adminName" name="admin_name" placeholder="Enter admin's full name">
+
+                <label for="adminEmail">Admin Email:</label>
+                <input type="email" id="adminEmail" name="admin_email" placeholder="Enter admin's email">
+            </div>
+
+            <button type="submit">Add User</button>
+        </form>
+    </div>
+
+    <script>
+        // Show/hide admin fields
+        function toggleAdminFields() {
+            const userType = document.getElementById('userType').value;
+            const adminFields = document.querySelector('.admin-fields');
+            
+            if (userType === 'admin') {
+                adminFields.style.display = 'block';
+            } else {
+                adminFields.style.display = 'none';
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('addUserForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+
+            fetch('add_user_backend.php', {
+                method: 'POST',
+                body: formData,
+            })
+                .then(response => response.json())
+                .then(result => {
+                    alert(result.message);
+                    if (result.success) {
+                        this.reset();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error adding user:', error);
+                    alert('Failed to add user. Please try again.');
+                });
+        });
+    </script>
+</body>
+</html>

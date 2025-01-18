@@ -1,0 +1,1116 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Include Font Awesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<style>
+/* General Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+body {
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
+    background-color: #ffffff;
+    padding: 20px;
+}
+
+.sidebar {
+    width: 250px;
+    background-color: #2c3e50;
+    color: white;
+    padding: 20px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.sidebar ul {
+    list-style-type: none;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    border-bottom: 1px solid #34495e;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.sidebar ul li:hover {
+    background-color: #34495e;
+}
+
+.sidebar ul li .barangay {
+    padding: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.sidebar ul li .barangay:hover {
+    background-color: #16a085;
+}
+
+
+
+.sidebar .active {
+    width: auto;
+}
+
+.sidebar-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: start;
+    cursor: pointer;
+    font-size: 24px;
+    padding: 10px;
+    color: white;
+}
+/* Main Content */
+.container {
+    margin-left: 250px;
+    padding: 20px;
+    width: calc(100% - 250px);
+    transition: margin-left 0.3s;
+}
+
+.container h1 {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.container h2 {
+    font-size: 20px;
+    margin-bottom: 20px;
+    color: #555;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+}
+
+/* Barangay Navigation */
+#barangayNav {
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+#barangayNav button {
+    background-color: #f1f2f4;
+    border: none;
+    padding: 10px 0px;
+    margin: 5px;
+    color: rgb(31, 24, 24);
+    font-size: 14px;
+    border-radius: 5px;
+    cursor: pointer;
+    flex: 1;
+    max-width: 120px;
+    text-align: center;
+}
+
+#barangayNav button:hover {
+    background-color: #353c41;
+}
+
+#barangayNav button .count {
+    font-size: 12px;
+    background-color: #e74c3c;
+    color: white;
+    padding: 2px 6px;
+    border-radius: 50%;
+    margin-left: 5px;
+}
+
+/* Table Styles */
+.table-container {
+    margin-top: 20px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+table th, table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+table th {
+    background-color: #2c3e50;
+    color: white;
+}
+
+table tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Menu List */
+#menuList {
+    list-style-type: none;
+    padding: 0;
+}
+
+#menuList li {
+    padding: 10px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+#menuList li:hover {
+    background-color: #34495e;
+}
+
+/* When the sidebar is collapsed (hidden) */
+body.collapsed .sidebar {
+    width: 60px; /* Reduce width to just show the icon */
+}
+
+body.collapsed .sidebar-header {
+    display: flex; /* Keep the header section with the icon */
+    justify-content: center; /* Center the icon */
+}
+
+body.collapsed #menuList,
+body.collapsed h2 {
+    display: none; /* Hide the entire menu list and <h2> text when collapsed */
+}
+
+body.collapsed .sidebar-menu {
+    display: none; /* Hide menu items when collapsed */
+}
+
+body.collapsed .container {
+    margin-left: 60px; /* Adjust the content area width */
+    width: calc(100% - 60px); /* Adjust for collapsed sidebar */
+}
+
+/* When the sidebar is expanded, show menu items */
+body:not(.collapsed) #menuList,
+body:not(.collapsed) h2 {
+    display: block; /* Show the menu and <h2> when expanded */
+}
+/* Add additional styles for the collapsed state if needed */
+body.collapsed .sidebar-header i {
+    font-size: 20px; /* Optional: resize icon */
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal.show {
+    display: block;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 70%;
+    max-width: 600px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-height: 80vh; /* Max height of the modal */
+    overflow-y: auto; /* Enable vertical scrolling */
+    position: relative;
+    cursor: move; /* Indicate that the modal is draggable */
+}
+
+/* Modal Header */
+.modal-content h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* Close button (X) */
+.modal-content .close-btn {
+    font-size: 30px;
+    font-weight: bold;
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.modal-content .close-btn:hover {
+    color: #333;
+}
+
+
+/* Form Styles inside Modal */
+.modal-content form {
+    display: grid;
+    gap: 15px;
+}
+
+.modal-content label {
+    font-size: 14px;
+    font-weight: bold;
+    color: #333;
+}
+
+.modal-content input,
+.modal-content select {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+
+/* Modal Submit and Cancel Buttons */
+.modal-content button {
+    padding: 10px 20px;
+    font-size: 16px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.modal-content button[type="submit"] {
+    background-color: #28a745;
+    color: white;
+}
+
+.modal-content button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.modal-content button[type="button"] {
+    background-color: #dc3545;
+    color: white;
+}
+
+.modal-content button[type="button"]:hover {
+    background-color: #c82333;
+}
+
+/* Modal Background and Transition */
+.modal.show {
+    opacity: 1;
+    pointer-events: auto;
+    transition: opacity 0.3s ease;
+}
+
+.modal.show .modal-content {
+    pointer-events: auto;
+}
+
+
+/* Search Bar */
+#searchBar {
+    width: 50%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* Sorting Icons */
+.sort-icons {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.sort-icons i {
+    font-size: 18px;
+    color: #16a085;
+    cursor: pointer;
+}
+
+.sort-icons i:hover {
+    color: #1abc9c;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .sidebar {
+        width: 200px;
+    }
+
+    .container {
+        margin-left: 200px;
+        width: calc(100% - 200px);
+    }
+
+    #barangayNav button {
+        padding: 8px 15px;
+    }
+
+    .table-container {
+        margin-top: 15px;
+    }
+
+    table th, table td {
+        padding: 10px;
+    }
+}
+
+@media (max-width: 500px) {
+    .sidebar {
+        width: 150px;
+    }
+
+    .container {
+        margin-left: 150px;
+        width: calc(100% - 150px);
+    }
+
+    #barangayNav button {
+        padding: 6px 12px;
+    }
+    
+}
+/* Style for the refresh button container */
+.refresh-container {
+    display: flex;
+    justify-content: flex-start; /* Align the button to the left */
+    margin-bottom: 10px; /* Space between the button and the table */
+    padding-left: 20px; /* Space from the left edge of the container */
+}
+
+/* Style for the refresh button */
+#refreshButton {
+    background-color: #ffffff; /* Green background color */
+    color: rgb(2, 1, 1);
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;   
+    transition: background-color 0.3s ease;
+}
+
+/* Hover effect for refresh button */
+#refreshButton:hover {
+    background-color: #fcfffd; /* Darker green when hovered */
+}
+
+#refreshButton i {
+    font-size: 16px; /* Icon size */
+}
+
+
+/* Style the action buttons container */
+.action-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+#downloadButton {
+    background-color: #28a745; /* Green color for both buttons */
+    color: white;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    margin-left: 30px;
+    transition: background-color 0.3s ease;
+}
+
+#downloadButton:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+#downloadButton i {
+    font: size 16px;
+}
+
+
+
+/* Styling for the Add New Account Button */
+.add-account-btn {
+    background-color: #4CAF50; /* Green background */
+    color: white;              /* White text */
+    border: none;              /* Remove border */
+    padding: 10px 20px;        /* Add padding */
+    font-size: 16px;           /* Text size */
+    font-weight: bold;         /* Make the text bold */
+    border-radius: 5px;        /* Round the corners */
+    cursor: pointer;          /* Show pointer on hover */
+    margin-bottom: 20px;       /* Add some space below the button */
+    display: inline-flex;      /* Align icon and text */
+    align-items: center;       /* Vertically align icon and text */
+}
+
+/* Hover effect */
+.add-account-btn:hover {
+    background-color: #45a049; /* Darker green when hovered */
+}
+
+/* Styling for the icon inside the button */
+.add-account-btn i {
+    margin-right: 8px; /* Space between icon and text */
+}
+
+
+</style>
+<div class="sidebar" id="sidebar">
+    <h2>Admin Dashboard</h2>
+    <!-- Sidebar Toggle Icon -->
+    <div id="toggleSidebar" class="sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </div>
+
+    <ul id="menuList">
+        <li id="dashboardMenu" onclick="window.location.href='dashboard.html'">
+            <i class="fas fa-tachometer-alt"></i> Dashboard
+        </li>
+        
+        <li id="farmersMenu">
+            <i class="fas fa-user-friends"></i> Farmers
+        </li>
+        <li id="distribution-records" onclick="window.location.href='add-distribution.html'">
+            <i class="fas fa-clipboard-list"></i> Distribution Records
+        </li>
+
+         <!-- Farmers Activities Menu -->
+        <li id="farmersActivitiesMenu" onclick="window.location.href='farmers-record.html'">
+            <i class="fas fa-seedling"></i> Farmers Activities
+        </li>
+
+        <!-- User Management Menu -->
+        <li id="userManagementMenu" onclick="window.location.href='manage_users.html'">
+            <i class="fas fa-users-cog"></i> User Management
+        </li>
+        <li id="passwordManagementMenu" onclick="window.location.href='admin_password_management.html'">
+            <i class="fas fa-key"></i> Password Management
+        </li>
+
+        <!-- Logout Menu -->
+        <li id="logoutMenu" onclick="window.location.href='logout.php'">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </li>
+    </ul>
+</div>
+
+<!-- Main Content -->
+<div class="container">
+    <h1><i class="fas fa-cogs"></i> Welcome to the Admin Dashboard</h1>
+    <h2></i> Manage data effectively and monitor progress seamlessly!</h2>
+    <h2>Farmers Records</h2>
+
+    <!-- Search Box for Approved Users -->
+    <input type="text" id="searchBar" placeholder="Search by name or RSBSA number" oninput="filterApprovedUsers()">
+
+    <!-- Sorting Icons -->
+    <div class="sort-icons">
+        <i class="fas fa-sort-amount-down" title="Sort Newest to Oldest" onclick="sortNewestToOldest()"></i>
+        <i class="fas fa-sort-alpha-down" title="Sort Alphabetically" onclick="sortAlphabetical()"></i>
+    </div>
+
+    <!-- Barangay Navigation Bar -->
+    <div id="barangayNav" class="barangay-nav">
+        <button onclick="showBarangayRecords('Balacanas')">Balacanas</button>
+        <button onclick="showBarangayRecords('Dayawan')">Dayawan</button>
+        <button onclick="showBarangayRecords('Katipunan')">Katipunan</button>
+        <button onclick="showBarangayRecords('Kimaya')">Kimaya</button>
+        <button onclick="showBarangayRecords('Poblacion 1')">Poblacion 1</button>
+        <button onclick="showBarangayRecords('Poblacion 2')">Poblacion 2</button>
+        <button onclick="showBarangayRecords('Poblacion 3')">Poblacion 3</button>
+        <button onclick="showBarangayRecords('San Martin')">San Martin</button>
+        <button onclick="showBarangayRecords('Tambobong')">Tambobong</button>
+        <button onclick="showBarangayRecords('Imelda')">Imelda</button>
+        <button onclick="showBarangayRecords('Looc')">Looc</button>
+    </div>
+
+    <h2>Barangay User Records</h2>
+    <div id="results"></div>
+
+    <!-- Beneficiary List Table -->
+    <div id="tableContainer" class="table-container">
+        <table id="approvedUsersTable">
+             <!-- Add New Account Button Above Table -->
+    <button id="addNewAccountBtn" class="add-account-btn" onclick="openAddAccountModal()">
+        <i class="fas fa-user-plus"></i> Add New Account
+    </button>
+
+    <!-- Download Button -->
+        <button id="downloadButton" onclick="downloadCSV()">
+            <i class="fas fa-download"></i> Download
+        </button>
+    </div>
+
+    <!-- Refresh Button with Icon -->
+    <div class="refresh-container">
+        <button id="refreshButton" onclick="refreshData()">
+            <i class="fas fa-sync-alt"></i> Refresh
+        </button>
+    </div>
+            <thead>
+                
+                <tr>
+                    <th>RSBA Number</th>
+                    <th>Name</th>
+                    <th>Barangay / Home Address</th>
+                    <th>Phone</th>
+                    <th>Farm Location</th>
+                    <th>Farm Size</th>
+                    <th>Farm Unit</th>
+
+
+                </tr>
+            </thead>
+            <tbody id="approvedUsersBody">
+                
+                <!-- Approved users will be populated here -->
+            </tbody>
+        </table>
+    </div>
+</div>
+
+  
+
+<!-- Modal for Add New Account -->
+<div id="addAccountModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('addAccountModal')">&times;</span>
+        <h2>Add New Farmer Account</h2>
+        <form id="processForm">
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" required>
+
+            <label for="middleInitial">Middle Initial:</label>
+            <input type="text" id="middleInitial" name="middleInitial" required>
+
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" required>
+
+            <label for="rsbaNumber">RSBA Number:</label>
+            <input type="number" id="rsbaNumber" name="rsbaNumber" required>
+
+            <label for="contactNumber">Contact Number (+63 format):</label>
+            <input type="text" id="contactNumber" name="contactNumber" required>
+
+            <label for="barangay">Barangay:</label>
+            <select id="barangay" name="barangay" required>
+                <option value="" disabled selected>Select your Barangay</option>
+                <option>Balacanas</option>
+                <option>Dayawan</option>
+                <option>Katipunan</option>
+                <option>Kimaya</option>
+                <option>Poblacion 1</option>
+                <option>Poblacion 2</option>
+                <option>Poblacion 3</option>
+                <option>San Martin</option>
+                <option>Tambobong</option>
+                <option>Imelda</option>
+                <option>Looc</option>
+            </select>
+
+            <label for="homeAddress">Home Address:</label>
+            <input type="text" id="homeAddress" name="homeAddress" required>
+
+            <label for="farmSize">Farm Size:</label>
+            <input type="number" id="farmSize" name="farmSize" required>
+
+            <select id="farmUnit" name="farmUnit" required>
+                <option value="" disabled selected>Select unit</option>
+                <option value="hectares">Hectares</option>
+                <option value="sqm">Sq Meters</option>
+                <option value="acres">Acres</option>
+            </select>
+
+            <label for="farmLocation">Farm Location:</label>
+            <input type="text" id="farmLocation" name="farmLocation" required>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+
+            <label for="confirmPassword">Confirm Password:</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" required>
+
+            <button type="submit">Add Account</button>
+        <button type="button" onclick="closeAddAccountModal()">Cancel</button>
+    </div>
+</div>
+
+
+
+    
+
+    <script>
+
+        // Open the modal
+        function openAddAccountModal() {
+            document.getElementById('addAccountModal').style.display = 'block';
+        }
+
+        // Close the modal
+        function closeAddAccountModal() {
+            document.getElementById('addAccountModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target == document.getElementById('addAccountModal')) {
+                closeAddAccountModal();
+            }
+        }
+
+        
+async function populateApprovedUsers() {
+    try {
+        const response = await fetch('fetch_approved_users.php');
+        const approvedUsers = await response.json();
+        filteredUsersByBarangay = approvedUsers; // Update filtered users
+
+        const approvedUsersBody = document.getElementById('approvedUsersBody');
+        approvedUsersBody.innerHTML = ''; // Clear table body
+
+        if (approvedUsers.length === 0) {
+            approvedUsersBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No approved users</td></tr>';
+        } else {
+            approvedUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${user.rsba_number}</td>
+                    <td>${user.first_name} ${user.last_name}</td>
+                    <td>${user.home_address}</td>
+                    <td>${user.contact_number}</td>
+                    <td>${user.farm_location}</td>
+                    <td>${user.farm_size}</td>
+                    <td>${user.farm_unit}</td>
+
+
+                `;
+                approvedUsersBody.appendChild(row);
+            });
+        }
+    } catch (error) {
+        console.error('Error fetching approved users:', error);
+    }
+}
+
+// Call the function on page load
+document.addEventListener('DOMContentLoaded', populateApprovedUsers);
+
+
+// Function to check if the table is empty
+function checkTableEmpty() {
+    const tableBody = document.getElementById("approvedUsersBody");
+    const emptyMessage = document.querySelector(".empty-message");
+
+    if (!tableBody.hasChildNodes()) {
+        if (!emptyMessage) {
+            const message = document.createElement("div");
+            message.className = "empty-message";
+            message.innerText = "No records found.";
+            tableBody.parentElement.appendChild(message);
+        }
+    } else if (emptyMessage) {
+        emptyMessage.remove();
+    }
+}
+
+// Call populate function on page load
+document.addEventListener('DOMContentLoaded', populateApprovedUsers);
+
+function updateUserTable(users) {
+    console.log('Users to display:', users); // Debugging
+    const approvedUsersBody = document.getElementById('approvedUsersBody');
+    approvedUsersBody.innerHTML = ''; // Clear table body
+
+    if (users.length === 0) {
+        approvedUsersBody.innerHTML = '<tr><td colspan="7" style="text-align:center;">No matching users</td></tr>';
+        return;
+    }
+
+    users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.rsba_number}</td>
+            <td>${user.first_name} ${user.last_name}</td>
+            <td>${user.home_address}</td>
+            <td>${user.contact_number}</td>
+            <td>${user.farm_location}</td>
+            <td>${user.farm_size}</td>
+            <td>${user.farm_unit}</td>
+        `;
+        approvedUsersBody.appendChild(row);
+    });
+}
+
+
+// Fetch data on page load
+document.addEventListener('DOMContentLoaded', fetchAllApprovedUsers);
+
+
+// Function to fetch all users from the database
+async function fetchAllApprovedUsers() {
+    try {
+        const response = await fetch('fetch_all_users.php'); // Backend endpoint for all users
+        const users = await response.json();
+        filteredUsersByBarangay = users; // Store all users globally
+        updateUserTable(users); // Initially display all users
+    } catch (error) {
+        console.error('Error fetching users:', error);
+        alert('Failed to fetch users. Please try again later.');
+    }
+}
+
+let filteredUsersByBarangay = []; // Declare this variable at the top of your script, outside of any functions
+
+function filterUsersByBarangay(barangay) {
+    // Assuming you have a full list of users stored in 'allUsers'
+    filteredUsersByBarangay = allUsers.filter(user => user.barangay === barangay);
+    showBarangayRecords(); // Call the function to update the table with filtered data
+}
+
+function showBarangayRecords(barangay) {
+    // Check if data exists
+    if (!Array.isArray(filteredUsersByBarangay) || filteredUsersByBarangay.length === 0) {
+        console.error('No user data available for filtering.');
+        return;
+    }
+
+    // Filter users by the selected barangay
+    const filtered = filteredUsersByBarangay.filter(user => user.barangay === barangay);
+
+    // Log filtered results for debugging
+    console.log(`Filtered users for ${barangay}:`, filtered);
+
+    // Update the table with filtered results
+    updateUserTable(filtered);
+    updateBarangayCounts(filtered); // Pass filtered data if counts depend on it
+}
+
+
+console.log('Initial filteredUsersByBarangay:', filteredUsersByBarangay);
+
+
+
+
+// Update Barangay counts (optional)
+function updateBarangayCounts() {
+        const barangayCounts = {};
+
+        filteredUsersByBarangay.forEach(user => {
+            barangayCounts[user.barangay] = (barangayCounts[user.barangay] || 0) + 1;
+        });
+
+        // Example: Log the counts for each barangay
+        console.log(barangayCounts);
+    }
+
+   // Event listener for Barangay filter buttons
+   document.querySelectorAll('.barangay-nav button').forEach(button => {
+        button.addEventListener('click', function () {
+            const barangay = this.textContent.trim();
+            showBarangayRecords(barangay);
+            document.getElementById('searchBar').value = ''; // Clear search input
+        });
+    });
+
+
+// Event listener for search input to filter users
+// Global variables to track sorting state
+let isAlphabeticalAscending = true;
+let isDateAscending = true;
+
+/**
+ * Sorts the table alphabetically based on the Name column.
+ */
+ function sortAlphabetical() {
+        const table = document.getElementById("approvedUsersTable");
+        const rows = Array.from(table.rows).slice(1); // Exclude header row
+
+        rows.sort((a, b) => {
+            const nameA = a.cells[1].innerText.toLowerCase();
+            const nameB = b.cells[1].innerText.toLowerCase();
+
+            return isAlphabeticalAscending
+                ? nameA.localeCompare(nameB)
+                : nameB.localeCompare(nameA);
+        });
+
+        rows.forEach(row => table.tBodies[0].appendChild(row));
+        isAlphabeticalAscending = !isAlphabeticalAscending; // Toggle sorting order
+    }
+
+function sortNewestToOldest() {
+    // Get the list container
+    const list = document.getElementById('itemList');
+    
+    // Get all list items
+    const items = Array.from(list.getElementsByTagName('li'));
+    
+    // Sort the items by the data-date attribute (newest first)
+    items.sort((a, b) => {
+        const dateA = new Date(a.getAttribute('data-date'));
+        const dateB = new Date(b.getAttribute('data-date'));
+        
+        // Return positive if b is newer (desc) else negative
+        return dateB - dateA;
+    });
+
+    // Remove the current list and append sorted items
+    items.forEach(item => list.appendChild(item));
+}
+
+ // JavaScript for handling form submission
+ document.getElementById('processForm').addEventListener('submit', function (event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Gather form data
+            const formData = {
+        firstName: document.getElementById('firstName').value,
+        middleInitial: document.getElementById('middleInitial').value,
+        lastName: document.getElementById('lastName').value,
+        rsbaNumber: document.getElementById('rsbaNumber').value,
+        contactNumber: document.getElementById('contactNumber').value,
+        barangay: document.getElementById('barangay').value,
+        homeAddress: document.getElementById('homeAddress').value,
+        farmSize: document.getElementById('farmSize').value,
+        farmUnit: document.getElementById('farmUnit').value,
+        farmLocation: document.getElementById('farmLocation').value,
+        password: document.getElementById('password').value,
+        status: 'approved' // Set status as approved
+            };
+
+    // Send data using fetch API
+            fetch('processForm.php', {
+                method: 'POST',
+                headers: {
+            'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => response.json())
+            .then(data => {
+        // Handle the response from the server
+                if (data.success) {
+                    alert('New account added.');
+                    window.location.href = 'admin.html'; // Redirect to login page
+                } else {
+            alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred. Please try again.');
+            });
+        });
+
+// Event listener for the close button
+const closeBtn = document.querySelector('.close-btn');
+closeBtn.addEventListener('click', () => closeModal('addAccountModal'));
+
+// Optional: Close the modal when clicking outside the modal content
+const modal = document.querySelector('.modal');
+modal.addEventListener('click', function (event) {
+    // Check if the click is outside the modal content
+    if (event.target === modal) {
+        closeModal();
+    }
+});
+
+
+    function downloadCSV() {
+    const table = document.getElementById("approvedUsersTable");
+    const rows = table.querySelectorAll("tbody tr");
+    
+    let csvContent = "RSBA Number, Name, Barangay/Home Address, Phone, Farm Location, Farm Size\n"; // CSV header
+
+    // Loop through rows and escape cell values
+    rows.forEach(row => {
+        const columns = row.querySelectorAll("td");
+        let rowData = [];
+
+        columns.forEach(col => {
+            let cellText = col.innerText.replace(/(\r\n|\n|\r)/gm, " "); // Remove line breaks
+            rowData.push(escapeCSV(cellText)); // Escape CSV content
+        });
+
+        csvContent += rowData.join(",") + "\n";
+    });
+
+    // Create Blob and simulate download
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = "farmers_records.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+}
+
+// Escape special characters for CSV
+function escapeCSV(text) {
+    if (text.includes(',')) {
+        text = `"${text}"`; // Wrap in quotes if it contains commas
+    }
+    if (text.includes('"')) {
+        text = text.replace(/"/g, '""'); // Escape double quotes
+    }
+    return text;
+}
+
+    // Assuming other existing functions are here...
+    
+    // Function to refresh and load all data
+    function refreshData() {
+        // Reset the filtered list to the full approved users list
+        filteredUsersByBarangay = approvedUsers;  // Show all users again
+        document.getElementById('searchBar').value = ''; // Clear the search input field
+        
+        // Update the table with all users
+        updateUserTable(filteredUsersByBarangay);
+    
+        // Update Barangay counts for all users
+        updateBarangayCounts();
+    }
+    
+    function updateUserTable(users) {
+    const approvedUsersBody = document.getElementById('approvedUsersBody');
+    approvedUsersBody.innerHTML = ''; // Clear previous data
+
+    if (!users || users.length === 0) {
+        approvedUsersBody.innerHTML = '<tr><td colspan="6" style="text-align:center;">No matching users</td></tr>';
+        return;
+    }
+
+    users.forEach(user => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${user.rsba_number || 'N/A'}</td>
+            <td>${user.first_name || 'N/A'} ${user.last_name || 'N/A'}</td>
+            <td>${user.home_address || 'N/A'}</td>
+            <td>${user.contact_number || 'N/A'}</td>
+            <td>${user.farm_location || 'N/A'}</td>
+            <td>${user.farm_size || 'N/A'}</td>
+            <td>${user.farm_unit || 'N/A'}</td>
+        `;
+        approvedUsersBody.appendChild(row);
+    });
+}
+// Fetch data on page load
+document.addEventListener('DOMContentLoaded', fetchAllApprovedUsers);
+    // Call refreshData initially if needed
+    window.onload = function () {
+        populateApprovedUsers();  // Populate users on page load
+        updateBarangayCounts();   // Update Barangay counts on page load
+    };
+
+    document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".edit-button").forEach(button => {
+        button.addEventListener("click", function () {
+            const activityId = this.getAttribute("data-id");
+
+            fetch(`get_activity.php?id=${activityId}`)
+                .then(response => response.json())
+                .then(activity => {
+                    if (activity) {
+                        const editForm = document.getElementById("edit-form");
+                        document.getElementById("edit-activity-id").value = activity.id;
+                        document.getElementById("edit-activity-type").value = activity.type;
+                        document.getElementById("edit-activity-caption").value = activity.caption;
+                        // Add other fields as needed
+
+                        editForm.style.display = "block"; // Show the edit form
+                    } else {
+                        alert("Activity not found.");
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching activity:", error);
+                    alert("An error occurred. Please try again.");
+                });
+        });
+    });
+});
+
+function saveEdit() {
+    const activityId = document.getElementById("edit-activity-id").value;
+    const activityType = document.getElementById("edit-activity-type").value;
+    const activityCaption = document.getElementById("edit-activity-caption").value;
+
+    fetch('update_activity.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            id: activityId,
+            type: activityType,
+            caption: activityCaption
+        })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert("Activity updated successfully!");
+                location.reload(); // Refresh the page
+            } else {
+                alert("Failed to update activity. Please try again.");
+            }
+        })
+        .catch(error => {
+            console.error("Error updating activity:", error);
+            alert("An error occurred. Please try again.");
+        });
+}
+
+
+    </script>
+
+</body>
+</html>
+
