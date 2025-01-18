@@ -47,6 +47,6 @@ if (isset($_POST['batchName'], $_POST['batchNumber'], $_POST['totalQuantity'])) 
 
 
 
-// Close the database connection
+// Close the database connection awawawaw
 mysqli_close($conn);
 ?>
